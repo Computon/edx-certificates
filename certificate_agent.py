@@ -59,14 +59,14 @@ def main():
     while True:
 
         if manager.get_length() == 0:
-            log.debug("{0} has no jobs".format(str(manager)))
+            log.debug("{} has no jobs".format(str(manager)))
             time.sleep(settings.QUEUE_POLL_FREQUENCY)
             continue
         else:
-            log.debug('queue length: {0}'.format(manager.get_length()))
+            log.debug(f'queue length: {manager.get_length()}')
 
         certdata = manager.get_submission()
-        log.debug('xqueue response: {0}'.format(certdata))
+        log.debug(f'xqueue response: {certdata}')
         try:
             xqueue_body = json.loads(certdata['xqueue_body'])
             xqueue_header = json.loads(certdata['xqueue_header'])
@@ -95,8 +95,8 @@ def main():
                 if action in ['remove']:
                     continue
 
-        except (TypeError, ValueError, KeyError, IOError) as e:
-            log.critical('Unable to parse queue submission ({0}) : {1}'.format(e, certdata))
+        except (TypeError, ValueError, KeyError, OSError) as e:
+            log.critical(f'Unable to parse queue submission ({e}) : {certdata}')
             if settings.DEBUG:
                 raise
             else:
@@ -175,7 +175,7 @@ def main():
                 'url': download_url,
             }),
         }
-        log.info("Posting result to the LMS: {0}".format(xqueue_reply))
+        log.info(f"Posting result to the LMS: {xqueue_reply}")
         manager.respond(xqueue_reply)
 
 
